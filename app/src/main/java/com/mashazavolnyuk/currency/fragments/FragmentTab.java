@@ -36,8 +36,8 @@ public class FragmentTab extends android.support.v4.app.Fragment {
 
     private void adjustElementView(View view){
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Stickers"));
-        tabLayout.addTab(tabLayout.newTab().setText("Frames"));
+        tabLayout.addTab(tabLayout.newTab().setText("Current situation"));
+        tabLayout.addTab(tabLayout.newTab().setText("Last 30 days"));
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.vpTab);

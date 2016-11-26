@@ -38,7 +38,6 @@ public class FragmentCurrentCourse extends Fragment {
     List<Currency> currencyList;
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
-//    EventBus eventBus=EventBus.getDefault();
     CurrentCourseAdapter currentCourseAdapter;
     @Nullable
     @Override
@@ -82,12 +81,9 @@ public class FragmentCurrentCourse extends Fragment {
             public void onResponse(Call<List<Currency>> call, Response<List<Currency>> response) {
                 currencyList = response.body();
                 DataCurrencies.getInstance().setCurrencies(currencyList);
-               // eventBus.post(new MessageEvent("up"));
                 currentCourseAdapter.Changed();
                 swipeRefreshLayout.setRefreshing(false);
-
             }
-
             @Override
             public void onFailure(Call<List<Currency>> call, Throwable t) {
 
