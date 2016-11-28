@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -22,12 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".service.MsgPushService"/>
         <receiver android:name=".broadcastReceiver.BroadcastReceiver" >
                 <intent-filter>
-                    <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                    <category android:name="android.intent.category.DEFAULT" />
+                    <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                    <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
