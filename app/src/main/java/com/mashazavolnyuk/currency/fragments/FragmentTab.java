@@ -38,7 +38,7 @@ public class FragmentTab extends android.support.v4.app.Fragment {
         adjustElementView(v);
         LinearLayout linearLayout=(LinearLayout) v.findViewById(R.id.parrent);
         linearLayout.removeView(tabLayout);
-        (( ICorrectDesigner)getActivity()).addChild(tabLayout);
+        (( ICorrectDesigner)getActivity()).addChild(tabLayout,0);
         return v;
     }
 

@@ -21,16 +21,20 @@ import com.mashazavolnyuk.currency.fragments.FragmentTab;
 import com.mashazavolnyuk.currency.interfaces.ICorrectDesigner;
 import com.mashazavolnyuk.currency.interfaces.INavigation;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ICorrectDesigner, INavigation {
     AppBarLayout appBarLayout;
-    View v;
+    Toolbar toolbar;
+    List<View> listView = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         toMainScreen();
     }
+
     @Override
     public void toMainScreen() {
         FragmentTab fragmentTab = new FragmentTab();
@@ -62,20 +67,20 @@ public class MainActivity extends AppCompatActivity
                 .setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("setting")
                 .commit();
-        appBarLayout.removeView(v);
+        cleanChildDesigner();
     }
 
     @Override
     public void toFindByDate(String date) {
-        FragmentFindByDate fragmentFindByDate=new FragmentFindByDate();
-        fragmentFindByDate.DATA_FIND=date;
+        FragmentFindByDate fragmentFindByDate = new FragmentFindByDate();
+        fragmentFindByDate.DATA_FIND = date;
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_main, fragmentFindByDate)
                 .setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("findByDate")
                 .commit();
-        appBarLayout.removeView(v);
+        cleanChildDesigner();
 
     }
 
@@ -130,9 +135,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void cleanChildDesigner() {
+        appBarLayout.removeView(listView.get(0));
+        toolbar.removeView(listView.get(1));
+        listView.clear();
+    }
+
     @Override
-    public void addChild(View v) {
-        this.v = v;
-        appBarLayout.addView(v);
+    public void addChild(View v, int parrent) {
+        listView.add(v);
+        if (parrent == 0)
+            appBarLayout.addView(listView.get(0));
+        else
+            toolbar.addView(listView.get(1));
     }
 }

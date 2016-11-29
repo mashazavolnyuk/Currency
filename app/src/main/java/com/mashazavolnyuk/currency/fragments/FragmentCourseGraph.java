@@ -1,12 +1,18 @@
 package com.mashazavolnyuk.currency.fragments;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
@@ -19,8 +25,10 @@ import com.mashazavolnyuk.currency.API.IRequest;
 import com.mashazavolnyuk.currency.DataPeriod;
 import com.mashazavolnyuk.currency.ExchangeRate;
 import com.mashazavolnyuk.currency.R;
+import com.mashazavolnyuk.currency.interfaces.ICorrectDesigner;
 import com.mashazavolnyuk.currency.util.DateUtil;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,8 +45,6 @@ import retrofit2.Response;
 
 public class FragmentCourseGraph extends Fragment {
 
-
-    String data;
     private volatile List<DataPeriod> dataPeriods;
     StaticLabelsFormatter staticLabelsFormatter;
     Date currentDate;
@@ -47,6 +53,7 @@ public class FragmentCourseGraph extends Fragment {
     BarGraphSeries<DataPoint> seriesPurchaseRateNB;
     List<String> formatGraph;
     private static final int DAY_COUNT = 30;
+    String TYPE_GRAPH_CURRENCY;
 
     @Nullable
     @Override
@@ -54,10 +61,34 @@ public class FragmentCourseGraph extends Fragment {
         View v = inflater.inflate(R.layout.fragment_graph, container, false);
         graph = (GraphView) v.findViewById(R.id.graph);
         staticLabelsFormatter = new StaticLabelsFormatter(graph);
-        seriesSaleRateNB = new BarGraphSeries<>();
-        seriesPurchaseRateNB = new BarGraphSeries<>();
         dataPeriods = new LinkedList<>();
-        adjustGraphView();
+
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        String[] items = new String[]{"USD", "EUR",};
+        final Spinner spinner = new Spinner(getActivity());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.item_spinner, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        ((ICorrectDesigner) getActivity()).addChild(spinner, 1);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String currency = spinner.getSelectedItem().toString();
+                if (!currency.equals(TYPE_GRAPH_CURRENCY)) {
+                    TYPE_GRAPH_CURRENCY = currency;
+                    adjustData();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         adjustData();
         return v;
     }
@@ -67,7 +98,7 @@ public class FragmentCourseGraph extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat dateGraph = new SimpleDateFormat("dd");
         currentDate = new Date();
-        formatGraph=new ArrayList<>(DAY_COUNT);
+        formatGraph = new ArrayList<>(DAY_COUNT);
         List<String> days = new ArrayList<>(DAY_COUNT);
         for (int i = 0; i < DAY_COUNT; i++) {
             String previousDay = DateUtil.getPreviousDay(currentDate, i, dateFormat);
@@ -82,12 +113,17 @@ public class FragmentCourseGraph extends Fragment {
         String[] stockArr = new String[DAY_COUNT];
         stockArr = formatGraph.toArray(stockArr);
         staticLabelsFormatter.setHorizontalLabels(stockArr);
+        dataPeriods.clear();
         for (String date : days) {
             makerequest(date);
         }
     }
 
     private void adjustGraphView() {
+        graph.removeAllSeries();
+
+        seriesSaleRateNB = new BarGraphSeries<>();
+        seriesPurchaseRateNB = new BarGraphSeries<>();
         //graph.addSeries(seriesSaleRateNB);
         seriesSaleRateNB.setSpacing(20);
         seriesSaleRateNB.setTitle("sale");
@@ -101,8 +137,8 @@ public class FragmentCourseGraph extends Fragment {
         graph.setTitle("Situation last 30 days");
         graph.setTitleColor(Color.RED);
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-        graph.getLegendRenderer().setFixedPosition(0,27);
-        graph.getLegendRenderer().setWidth(graph.getWidth()/2);
+        graph.getLegendRenderer().setFixedPosition(0, 27);
+        graph.getLegendRenderer().setWidth(graph.getWidth() / 2);
         graph.getLegendRenderer().setTextSize(18);
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setTextSize(16);
@@ -124,12 +160,15 @@ public class FragmentCourseGraph extends Fragment {
     }
 
     private void draw() {
+
+        adjustGraphView();
+
         int i = 1;
         for (DataPeriod dataPeriod : dataPeriods) {
             List<ExchangeRate> exchangeRates = dataPeriod.getExchangeRate();
-            if (exchangeRates!=null && exchangeRates.size() != 0) {
+            if (exchangeRates != null && exchangeRates.size() != 0) {
                 for (ExchangeRate exchangeRate : exchangeRates) {
-                    if (exchangeRate.getCurrency().equals("USD")) {
+                    if (exchangeRate.getCurrency().equals(TYPE_GRAPH_CURRENCY)) {
                         Double saleRateNB = exchangeRate.getSaleRateNB();
                         Double purchaseRateNB = exchangeRate.getPurchaseRateNB();
                         seriesSaleRateNB.appendData(new DataPoint(i++, saleRateNB), true, DAY_COUNT);

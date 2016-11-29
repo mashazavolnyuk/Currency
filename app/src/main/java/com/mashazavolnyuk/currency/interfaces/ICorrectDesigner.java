@@ -7,5 +7,5 @@ import android.view.View;
  */
 
 public interface ICorrectDesigner {
-     void addChild(View v);
+     void addChild(View v,int parrent);
 }
