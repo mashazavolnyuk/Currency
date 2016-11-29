@@ -8,13 +8,13 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cv_course_currency"
         android:layout_width="match_parent"
-        android:background="@color/white"
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="4dp"
+        android:background="@color/white"
         android:paddingLeft="1dp"
         android:paddingRight="1dp"
         card_view:cardCornerRadius="2dp"
@@ -29,22 +29,58 @@
                 android:id="@+id/tv_course_currency"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="ccy" />
+                android:text="ccy"
+                android:textColor="@color/colorPrimaryText" />
 
-            <TextView
-                android:id="@+id/tv_course_currency_buy"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <RelativeLayout
+                android:id="@+id/topData"
                 android:layout_alignParentRight="true"
-                android:text="sale" />
-
-            <TextView
-                android:id="@+id/tv_course_currency_sale"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/tv_course_currency_buy"
-                android:text="buy" />
+                android:layout_height="wrap_content">
 
+                <TextView
+                    android:id="@+id/tv_course_currency_buy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text=""
+                    android:textColor="@color/colorSecondaryText" />
+
+                <TextView
+                    android:id="@+id/tv_titleSale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/tv_course_currency_buy"
+                    android:text="Sale/  "
+                    android:textColor="@color/colorPrimaryText" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_below="@+id/topData"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_course_currency_sale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:text=""
+                    android:textColor="@color/colorSecondaryText" />
+
+                <TextView
+                    android:id="@+id/tv_titleBuy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/tv_course_currency_sale"
+                    android:text="Buy/  "
+                    android:textColor="@color/colorPrimaryText" />
+
+
+            </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

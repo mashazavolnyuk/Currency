@@ -4,23 +4,9 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
-            android:icon="@mipmap/ic_action_realtime_protection1600"
             android:title="Main" />
         <item
             android:id="@+id/nav_gallery"
             android:title="Setting" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:title="Find" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-        </menu>
-    </item>
-
 </menu>

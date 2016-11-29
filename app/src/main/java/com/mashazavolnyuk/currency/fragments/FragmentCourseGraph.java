@@ -2,6 +2,7 @@ package com.mashazavolnyuk.currency.fragments;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -121,7 +122,6 @@ public class FragmentCourseGraph extends Fragment {
 
     private void adjustGraphView() {
         graph.removeAllSeries();
-
         seriesSaleRateNB = new BarGraphSeries<>();
         seriesPurchaseRateNB = new BarGraphSeries<>();
         //graph.addSeries(seriesSaleRateNB);
@@ -131,7 +131,6 @@ public class FragmentCourseGraph extends Fragment {
         seriesPurchaseRateNB.setSpacing(20);
         seriesPurchaseRateNB.setTitle("purchase");
         seriesPurchaseRateNB.setColor(Color.BLUE);
-
         graph.getGridLabelRenderer().setTextSize(16);
 //        graph.getGridLabelRenderer().setLabelsSpace(30);
         graph.setTitle("Situation last 30 days");
@@ -139,9 +138,10 @@ public class FragmentCourseGraph extends Fragment {
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
         graph.getLegendRenderer().setFixedPosition(0, 27);
         graph.getLegendRenderer().setWidth(graph.getWidth() / 2);
-        graph.getLegendRenderer().setTextSize(18);
+        graph.getLegendRenderer().setTextSize(70);
+        graph.getLegendRenderer().setTextColor(R.color.white);
+        graph.getLegendRenderer().setBackgroundColor(R.color.white);
         graph.getLegendRenderer().setVisible(true);
-        graph.getLegendRenderer().setTextSize(16);
         graph.getLegendRenderer().setSpacing(30);
         graph.getGridLabelRenderer().setLabelsSpace(50);
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
@@ -161,25 +161,26 @@ public class FragmentCourseGraph extends Fragment {
 
     private void draw() {
 
-        adjustGraphView();
-
-        int i = 1;
-        for (DataPeriod dataPeriod : dataPeriods) {
-            List<ExchangeRate> exchangeRates = dataPeriod.getExchangeRate();
-            if (exchangeRates != null && exchangeRates.size() != 0) {
-                for (ExchangeRate exchangeRate : exchangeRates) {
-                    if (exchangeRate.getCurrency().equals(TYPE_GRAPH_CURRENCY)) {
-                        Double saleRateNB = exchangeRate.getSaleRateNB();
-                        Double purchaseRateNB = exchangeRate.getPurchaseRateNB();
-                        seriesSaleRateNB.appendData(new DataPoint(i++, saleRateNB), true, DAY_COUNT);
-                        seriesPurchaseRateNB.appendData(new DataPoint(i++, purchaseRateNB), true, DAY_COUNT);
-                    }
-                }
-            }//if
-        }//for
-        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-        graph.addSeries(seriesSaleRateNB);
-        graph.addSeries(seriesPurchaseRateNB);
+        // adjustGraphView();
+        AsyncTDraw AsyncTDraw = new AsyncTDraw();
+        AsyncTDraw.execute();
+//        int i = 1;
+//        for (DataPeriod dataPeriod : dataPeriods) {
+//            List<ExchangeRate> exchangeRates = dataPeriod.getExchangeRate();
+//            if (exchangeRates != null && exchangeRates.size() != 0) {
+//                for (ExchangeRate exchangeRate : exchangeRates) {
+//                    if (exchangeRate.getCurrency().equals(TYPE_GRAPH_CURRENCY)) {
+//                        Double saleRateNB = exchangeRate.getSaleRateNB();
+//                        Double purchaseRateNB = exchangeRate.getPurchaseRateNB();
+//                        seriesSaleRateNB.appendData(new DataPoint(i++, saleRateNB), true, DAY_COUNT);
+//                        seriesPurchaseRateNB.appendData(new DataPoint(i++, purchaseRateNB), true, DAY_COUNT);
+//                    }
+//                }
+//            }//if
+//        }//for
+//        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+//        graph.addSeries(seriesSaleRateNB);
+//        graph.addSeries(seriesPurchaseRateNB);
 
     }
 
@@ -204,6 +205,40 @@ public class FragmentCourseGraph extends Fragment {
         if (dataPeriods.size() == DAY_COUNT)
             draw();
     }
+
+    class AsyncTDraw extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            adjustGraphView();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int i = 1;
+            for (DataPeriod dataPeriod : dataPeriods) {
+                List<ExchangeRate> exchangeRates = dataPeriod.getExchangeRate();
+                if (exchangeRates != null && exchangeRates.size() != 0) {
+                    for (ExchangeRate exchangeRate : exchangeRates) {
+                        if (exchangeRate.getCurrency().equals(TYPE_GRAPH_CURRENCY)) {
+                            Double saleRateNB = exchangeRate.getSaleRateNB();
+                            Double purchaseRateNB = exchangeRate.getPurchaseRateNB();
+                            seriesSaleRateNB.appendData(new DataPoint(i++, saleRateNB), true, DAY_COUNT);
+                            seriesPurchaseRateNB.appendData(new DataPoint(i++, purchaseRateNB), true, DAY_COUNT);
+                        }
+                    }
+                }//if
+            }//for
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+            graph.addSeries(seriesSaleRateNB);
+            graph.addSeries(seriesPurchaseRateNB);
+        }
+    }
+
 
 }
 

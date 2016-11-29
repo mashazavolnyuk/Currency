@@ -42,11 +42,6 @@ public class FragmentTab extends android.support.v4.app.Fragment {
         return v;
     }
 
-
-    public View getChild() {
-        return tabLayout;
-    }
-
     private void adjustElementView(View view) {
         tabLayout.addTab(tabLayout.newTab().setText("Current situation"));
         tabLayout.addTab(tabLayout.newTab().setText("Last 30 days"));
