@@ -15,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.mashazavolnyuk.currency.R;
 import com.mashazavolnyuk.currency.service.MsgPushService;
 
 import java.util.Calendar;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Dark Maleficent on 28.11.2016.
@@ -29,16 +32,18 @@ import java.util.Calendar;
 public class FragmentSetting extends Fragment {
 
     SharedPreferences sPref;
-    final int  TIME_DIALOG_ID=1;
-    int hour,minute;
+    final int TIME_DIALOG_ID = 1;
+    int hour, minute;
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
+    TextView time;
+    final String SAVED_TEXT = "saved_text";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_setting, container, false);
-        FloatingActionButton floatingActionButton=(FloatingActionButton) v.findViewById(R.id.fabSettingTime);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) v.findViewById(R.id.fabSettingTime);
         floatingActionButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -46,16 +51,16 @@ public class FragmentSetting extends Fragment {
                 return false;
             }
         });
-
-
+        time = (TextView) v.findViewById(R.id.tvTime);
+        loadText();
         return v;
     }
 
     public Dialog createDialog(int id) {
         switch (id) {
             case TIME_DIALOG_ID:
-                hour=Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-                minute=Calendar.getInstance().get(Calendar.MINUTE);
+                hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                minute = Calendar.getInstance().get(Calendar.MINUTE);
                 return new TimePickerDialog(getActivity(), timePickerListener, hour, minute, true);
 
         }
@@ -66,17 +71,17 @@ public class FragmentSetting extends Fragment {
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
-            hour   = hourOfDay;
+            hour = hourOfDay;
             minute = minutes;
             setStartTimeService();
         }
 
     };
 
-    private void setStartTimeService(){
+    private void setStartTimeService() {
         Intent intent = new Intent(getActivity(), MsgPushService.class);
-        pendingIntent=PendingIntent.getService(getActivity(), 0, intent, 0);
-        alarmManager=(AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        pendingIntent = PendingIntent.getService(getActivity(), 0, intent, 0);
+        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -85,10 +90,33 @@ public class FragmentSetting extends Fragment {
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 1000 * 60 * 20, pendingIntent);
-
+        save();
 //        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 4000, pendingIntent);
 //        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
 //                hour + minute, 5000, pendingIntent);
 
     }
+
+    private void save() {
+        sPref = getActivity().getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        String value = hour + ":" + minute;
+        ed.putString(SAVED_TEXT, value);
+        ed.commit();
+        update(value);
+
+    }
+
+    private void loadText() {
+        sPref = getActivity().getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString(SAVED_TEXT, "");
+        time.setText(savedText);
+    }
+
+    private void update(String value) {
+        time.setText(value);
+
+    }
+
+
 }
