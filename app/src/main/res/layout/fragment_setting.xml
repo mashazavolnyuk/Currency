@@ -12,6 +12,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"
             android:text="Time notification"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="18sp" />
 
         <TextView
@@ -22,7 +23,7 @@
             android:layout_below="@+id/tvTimeTitle"
             android:layout_marginLeft="15dp"
             android:text="9:00"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorSecondaryText"
             android:textSize="14sp" />
 
         <android.support.v7.widget.SwitchCompat
@@ -31,13 +32,4 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabSettingTime"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:src="@mipmap/ic_action_realtime_protection1600"
-        app:fabSize="normal" />
 </RelativeLayout>

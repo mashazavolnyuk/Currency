@@ -10,8 +10,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.LinearLayout;
 
 import com.mashazavolnyuk.currency.R;
+import com.mashazavolnyuk.currency.interfaces.ICorrectDesigner;
 
 /**
  * Created by Dark Maleficent on 26.11.2016.
@@ -20,6 +23,7 @@ import com.mashazavolnyuk.currency.R;
 public class FragmentTab extends android.support.v4.app.Fragment {
     FragmentCurrentCourse tab1;
     FragmentCourseGraph tab2;
+    TabLayout tabLayout;
     private int[] tabIcons = {
             R.mipmap.ic_currency_eur_white_48dp,
             R.mipmap.ic_chart_line_white_48dp,
@@ -29,13 +33,21 @@ public class FragmentTab extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_tab, container, false);
+        tabLayout = (TabLayout) v.findViewById(R.id.tabLayout);
         setHasOptionsMenu(true);
         adjustElementView(v);
+        LinearLayout linearLayout=(LinearLayout) v.findViewById(R.id.parrent);
+        linearLayout.removeView(tabLayout);
+        (( ICorrectDesigner)getActivity()).addChild(tabLayout);
         return v;
     }
 
-    private void adjustElementView(View view){
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
+
+    public View getChild() {
+        return tabLayout;
+    }
+
+    private void adjustElementView(View view) {
         tabLayout.addTab(tabLayout.newTab().setText("Current situation"));
         tabLayout.addTab(tabLayout.newTab().setText("Last 30 days"));
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
@@ -49,9 +61,11 @@ public class FragmentTab extends android.support.v4.app.Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 

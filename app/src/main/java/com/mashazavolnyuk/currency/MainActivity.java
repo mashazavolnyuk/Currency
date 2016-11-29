@@ -1,11 +1,13 @@
 package com.mashazavolnyuk.currency;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +17,12 @@ import android.view.View;
 
 import com.mashazavolnyuk.currency.fragments.FragmentSetting;
 import com.mashazavolnyuk.currency.fragments.FragmentTab;
+import com.mashazavolnyuk.currency.interfaces.ICorrectDesigner;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ICorrectDesigner {
+    AppBarLayout appBarLayout;
+    View v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -36,8 +42,8 @@ public class MainActivity extends AppCompatActivity
         toMainScreen();
     }
 
-    private void toMainScreen(){
-        FragmentTab fragmentTab=new FragmentTab();
+    private void toMainScreen() {
+        FragmentTab fragmentTab = new FragmentTab();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_main, fragmentTab)
@@ -46,15 +52,17 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void toScreenSetting(){
-        FragmentSetting fragmentTab=new FragmentSetting();
+    private void toScreenSetting() {
+        FragmentSetting fragmentTab = new FragmentSetting();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_main, fragmentTab)
                 .setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("setting")
                 .commit();
+        appBarLayout.removeView(v);
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -104,5 +112,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void addChild(View v) {
+        this.v = v;
+        appBarLayout.addView(v);
     }
 }
