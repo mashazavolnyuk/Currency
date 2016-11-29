@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.mashazavolnyuk.currency.fragments.FragmentSetting;
 import com.mashazavolnyuk.currency.fragments.FragmentTab;
 
 public class MainActivity extends AppCompatActivity
@@ -41,7 +42,17 @@ public class MainActivity extends AppCompatActivity
                 .beginTransaction()
                 .replace(R.id.content_main, fragmentTab)
                 .setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack("effects")
+                .addToBackStack("tab")
+                .commit();
+    }
+
+    private void toScreenSetting(){
+        FragmentSetting fragmentTab=new FragmentSetting();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, fragmentTab)
+                .setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack("setting")
                 .commit();
     }
     @Override
@@ -83,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            toScreenSetting();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
