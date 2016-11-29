@@ -10,8 +10,6 @@ import com.mashazavolnyuk.currency.Currency;
 import com.mashazavolnyuk.currency.ExchangeRate;
 import com.mashazavolnyuk.currency.R;
 import com.mashazavolnyuk.currency.data.DataCurrencies;
-import com.mashazavolnyuk.currency.event.MessageEvent;
-import com.mashazavolnyuk.currency.interfaces.ICurrency;
 
 import java.util.List;
 

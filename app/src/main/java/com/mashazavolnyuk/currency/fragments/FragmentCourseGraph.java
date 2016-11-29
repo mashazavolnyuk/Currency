@@ -127,7 +127,7 @@ public class FragmentCourseGraph extends Fragment {
         int i = 1;
         for (DataPeriod dataPeriod : dataPeriods) {
             List<ExchangeRate> exchangeRates = dataPeriod.getExchangeRate();
-            if (exchangeRates.size() != 0) {
+            if (exchangeRates!=null && exchangeRates.size() != 0) {
                 for (ExchangeRate exchangeRate : exchangeRates) {
                     if (exchangeRate.getCurrency().equals("USD")) {
                         Double saleRateNB = exchangeRate.getSaleRateNB();

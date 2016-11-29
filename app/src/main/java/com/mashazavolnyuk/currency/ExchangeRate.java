@@ -2,9 +2,8 @@ package com.mashazavolnyuk.currency;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.mashazavolnyuk.currency.interfaces.ICurrency;
 
-public class ExchangeRate implements ICurrency {
+public class ExchangeRate {
 
     @SerializedName("baseCurrency")
     @Expose
@@ -131,22 +130,5 @@ public class ExchangeRate implements ICurrency {
      */
     public void setPurchaseRate(Double purchaseRate) {
         this.purchaseRate = purchaseRate;
-    }
-
-
-
-    @Override
-    public String getCcy() {
-        return currency;
-    }
-
-    @Override
-    public String getSale() {
-        return saleRateNB.toString();
-    }
-
-    @Override
-    public String getBuy() {
-        return purchaseRateNB.toString();
     }
 }
