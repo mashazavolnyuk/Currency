@@ -15,12 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.mashazavolnyuk.currency.fragments.FragmentFindByDate;
 import com.mashazavolnyuk.currency.fragments.FragmentSetting;
 import com.mashazavolnyuk.currency.fragments.FragmentTab;
 import com.mashazavolnyuk.currency.interfaces.ICorrectDesigner;
+import com.mashazavolnyuk.currency.interfaces.INavigation;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ICorrectDesigner {
+        implements NavigationView.OnNavigationItemSelectedListener, ICorrectDesigner, INavigation {
     AppBarLayout appBarLayout;
     View v;
 
@@ -36,13 +38,12 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         toMainScreen();
     }
-
-    private void toMainScreen() {
+    @Override
+    public void toMainScreen() {
         FragmentTab fragmentTab = new FragmentTab();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void toScreenSetting() {
+    @Override
+    public void toScreenSetting() {
         FragmentSetting fragmentTab = new FragmentSetting();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -61,6 +63,20 @@ public class MainActivity extends AppCompatActivity
                 .addToBackStack("setting")
                 .commit();
         appBarLayout.removeView(v);
+    }
+
+    @Override
+    public void toFindByDate(String date) {
+        FragmentFindByDate fragmentFindByDate=new FragmentFindByDate();
+        fragmentFindByDate.DATA_FIND=date;
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, fragmentFindByDate)
+                .setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack("findByDate")
+                .commit();
+        appBarLayout.removeView(v);
+
     }
 
     @Override

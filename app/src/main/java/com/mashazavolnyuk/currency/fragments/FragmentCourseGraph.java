@@ -152,7 +152,6 @@ public class FragmentCourseGraph extends Fragment {
             @Override
             public void onResponse(Call<DataPeriod> call, Response<DataPeriod> response) {
                 addDataPeriod(response.body());
-
             }
 
             @Override

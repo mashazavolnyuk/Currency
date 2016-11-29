@@ -2,12 +2,13 @@ package com.mashazavolnyuk.currency;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mashazavolnyuk.currency.interfaces.ICurrency;
 
 /**
  * Created by Dark Maleficent on 26.11.2016.
  */
 
-public class Currency {
+public class Currency implements ICurrency {
     @SerializedName("ccy")
     @Expose
     private String ccy;

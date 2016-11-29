@@ -5,4 +5,8 @@ package com.mashazavolnyuk.currency.interfaces;
  */
 
 public interface INavigation {
+    void toMainScreen();
+    void toScreenSetting();
+    void toFindByDate(String date);
 }
+

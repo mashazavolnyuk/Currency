@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:title="aplly"
+        android:id="@+id/findByDate"
+        android:icon="@mipmap/ic_calendar_white_48dp"
+        android:showAsAction="always"
+        android:orderInCategory="100"
+        />
 </menu>

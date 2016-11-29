@@ -5,4 +5,8 @@ package com.mashazavolnyuk.currency.interfaces;
  */
 
 public interface ICurrency {
+    String getCcy();
+    String getSale();
+    String getBuy();
+
 }

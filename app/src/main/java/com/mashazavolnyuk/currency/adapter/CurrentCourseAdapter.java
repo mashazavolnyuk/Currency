@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mashazavolnyuk.currency.Currency;
+import com.mashazavolnyuk.currency.ExchangeRate;
 import com.mashazavolnyuk.currency.R;
 import com.mashazavolnyuk.currency.data.DataCurrencies;
 import com.mashazavolnyuk.currency.event.MessageEvent;
+import com.mashazavolnyuk.currency.interfaces.ICurrency;
 
 import java.util.List;
 
@@ -19,13 +22,27 @@ import java.util.List;
 public class CurrentCourseAdapter extends RecyclerView.Adapter<CurrentCourseHolders> {
 
     private Context context;
-    private List<com.mashazavolnyuk.currency.Currency> data;
+    private List<Currency> currencies;
+    private List<ExchangeRate> exchangeRates;
+
+    public static final int MODE_HISTORY = 2;
+    public static final int MODE_CURRENT_DAY = 1;
+    public static int MODE = 1;
 
 
-    public CurrentCourseAdapter(Context context) {
+    public CurrentCourseAdapter(Context context, int MODE) {
         this.context = context;
-        data = DataCurrencies.getInstance().getCurrencies();
+        this.MODE = MODE;
+        if (MODE == MODE_HISTORY) {
+            this.MODE = MODE_HISTORY;
+            currencies = DataCurrencies.getInstance().getCurrencies();
+        }
+        if (MODE == MODE_CURRENT_DAY) {
+            this.MODE = MODE_CURRENT_DAY;
+            exchangeRates = DataCurrencies.getInstance().getExchangeRates();
+        }
     }
+
     @Override
     public CurrentCourseHolders onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(context).inflate(R.layout.item_course_currency, null);
@@ -35,24 +52,39 @@ public class CurrentCourseAdapter extends RecyclerView.Adapter<CurrentCourseHold
 
     @Override
     public void onBindViewHolder(CurrentCourseHolders holder, int position) {
-        holder.cciText.setText(data.get(position).getCcy());
-        holder.saleText.setText(data.get(position).getSale());
-        holder.buyText.setText(data.get(position).getBuy());
+        if (MODE == MODE_CURRENT_DAY) {
+            holder.cciText.setText(currencies.get(position).getCcy());
+            holder.saleText.setText(currencies.get(position).getSale());
+            holder.buyText.setText(currencies.get(position).getBuy());
+        }
+        if (MODE == MODE_HISTORY) {
+            holder.cciText.setText(exchangeRates.get(position).getCurrency());
+            holder.saleText.setText(exchangeRates.get(position).getSaleRateNB().toString());
+            holder.buyText.setText(exchangeRates.get(position).getPurchaseRateNB().toString());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        try {
+            if (MODE == MODE_CURRENT_DAY)
+                return currencies.size();
+            if (MODE == MODE_HISTORY)
+                return exchangeRates.size();
+        } catch (NullPointerException e) {
+            return 0;
+        }
+
+
+        return 0;
     }
 
 
-    public void Changed(){
-        data = DataCurrencies.getInstance().getCurrencies();
+    public void Changed() {
+        if (MODE == MODE_CURRENT_DAY)
+            currencies = DataCurrencies.getInstance().getCurrencies();
+        if (MODE == MODE_HISTORY)
+            exchangeRates = DataCurrencies.getInstance().getExchangeRates();
         notifyDataSetChanged();
     }
-    public void onEvent(MessageEvent messageEvent){
-        messageEvent.getMessage();
-        notifyDataSetChanged();
-    }
-
 }
